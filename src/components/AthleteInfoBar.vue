@@ -1,3 +1,7 @@
+<script setup>
+import InsightTableRow from './InsightTableRow.vue';
+</script>
+
 <template>
     <div id="container">
         <div id="athlete-info-bar">
@@ -101,20 +105,8 @@
                             </th>
                         </tr>
                     </thead>
-                    <tr v-for="(row, index) in rowData" :key="index" :class="index % 2 !== 0 ? 'bg-table-row' : 'bg-white'">
-                        <td>{{ row.school }}</td>
-                        <td class="text-center">{{ row.division }}</td>
-                        <td>{{ row.conference }}</td>
-                        <td class="text-center">{{ row.ranking }}</td>
-                        <td class="text-center">{{ row.gpa.min.toFixed(2) }}</td>
-                        <td class="text-center">{{ row.gpa['25%'].toFixed(2) }}</td>
-                        <td :class="getHex(row.gpa['50%'])" class="text-center">{{ row.gpa['50%'].toFixed(2) }}</td>
-                        <td class="text-center">{{ row.gpa['75%'].toFixed(2) }}</td>
-                        <td class="text-center">{{ row.gpa.max.toFixed(2) }}</td>
-                        <td class="text-center">{{ row.sat.reading.min === 'N/A' ? 'Not Reported' : row.sat.reading.min + '-' + row.sat.reading.max }}</td>
-                        <td class="text-center">{{ row.sat.math.min === 'N/A' ? 'Not Reported' : row.sat.math.min + '-' + row.sat.math.max }}</td>
-                        <td class="text-center">{{ row.act.min === 'N/A'? 'Not Reported': row.act.min + '-' + row.act.max }}</td>
-                    </tr>
+                    <InsightTableRow v-for="(row, index) in rowData" :key="index"
+                        :class="index % 2 !== 0 ? 'bg-table-row' : 'bg-white'" :schoolData="row" :athleteData="athlete" />
                 </table>
             </div>
         </div>
@@ -124,43 +116,26 @@
 <script>
 export default {
     name: "AthleteInfoBar",
-    
     props: {
         athlete: {
             type: Object,
             required: false
         }
     },
-    
     data() {
         return {
             rowData: this.athlete.report
-        }
+        };
     },
-
-    methods: {
-        getHex(gpa) {
-            const diff = gpa - this.athlete.gpa;
-            console.log(diff);
-            if(diff > .1) {
-                return "bg-gpa-more-than-10-above";
-            } else if (diff > 0 && diff <= .1) {
-                return "bg-gpa-less-than-10-above";
-            } else if (diff == 0) {
-                return "bg-gpa-equal";
-            } else if (diff < 0 && diff >= -.1) {
-                return "bg-gpa-less-than-10-below";
-            } else if (diff < -.1) {
-                return "bg-gpa-more-than-10-below"
-            }
-        }
-    }
+    
+    components: { InsightTableRow }
 };
 </script>
 <style scoped>
 label {
     font-weight: bold;
 }
+
 #athlete-info-bar {
     display: grid;
     grid-template-areas:
@@ -230,10 +205,5 @@ th {
     font-size: 12px;
     font-weight: bold;
     line-height: 12px;
-}
-
-td {
-    font-size: 12px;
-    padding:5px;
 }
 </style>
