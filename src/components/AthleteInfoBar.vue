@@ -5,7 +5,7 @@
                 <img id="profile-pic" src="../assets/profile-pic.webp" height="100" width="100">
             </div>
             <div id="athlete-name">
-                <h2>{{ athlete.name }}</h2>
+                <h2 class="text-3xl">{{ athlete.name }}</h2>
             </div>
 
             <div id="athlete-info-1">
@@ -43,7 +43,7 @@
                 <h3>Academic Fit Report</h3>
             </div>
             <div id="table">
-                <table>
+                <table class="table-auto">
                     <tr>
                         <th>First Name</th>
                         <th>Last Name</th>
