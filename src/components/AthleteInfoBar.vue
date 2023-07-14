@@ -1,11 +1,12 @@
 <template>
     <div id="container">
         <div id="athlete-info-bar">
+            <hr id="top-bar" class="border-theme-blue border-4 fixed top-0 w-3/4">
             <div id="profile-pic-section">
                 <img id="profile-pic" src="../assets/profile-pic.webp" height="100" width="100">
             </div>
             <div id="athlete-name">
-                <h2 class="text-3xl">{{ athlete.name }}</h2>
+                <h2 class="text-2xl font-bold text-theme-blue">{{ athlete.name }}</h2>
             </div>
 
             <div id="athlete-info-1">
@@ -43,31 +44,76 @@
                 <h3>Academic Fit Report</h3>
             </div>
             <div id="table">
-                <table class="table-auto">
-                    <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Points</th>
-                    </tr>
-                    <tr>
-                        <td>Peter</td>
-                        <td>Griffin</td>
-                        <td>$100</td>
-                    </tr>
-                    <tr>
-                        <td>Lois</td>
-                        <td>Griffin</td>
-                        <td>$150</td>
-                    </tr>
-                    <tr>
-                        <td>Joe</td>
-                        <td>Swanson</td>
-                        <td>$300</td>
-                    </tr>
-                    <tr>
-                        <td>Cleveland</td>
-                        <td>Brown</td>
-                        <td>$250</td>
+                <table class="table-auto mt-6 whitespace-nowrap">
+                    <thead class="bg-header-black text-white leading-5">
+                        <tr class="h-0">
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>Ranking*</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <th>School Name</th>
+                            <th>Athletic Div</th>
+                            <th>Conference</th>
+                            <th>
+                                <span class="text-xs">(D1 NCAA)</span>
+                            </th>
+                            <th colspan="5">GPA**</th>
+                            <th>
+                                <span>SAT Reading***</span>
+                            </th>
+                            <th>
+                                <span>SAT Math***</span>
+                            </th>
+                            <th>
+                                <span>ACT Composite***</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>
+                                <span class="text-xs">(DII & DIII Hero Sports)</span>
+                            </th>
+                            <th>Min</th>
+                            <th>25%</th>
+                            <th>50%</th>
+                            <th>75%</th>
+                            <th>Max</th>
+                            <th>
+                                <span>25%-75%</span>
+                            </th>
+                            <th>
+                                <span>25%-75%</span>
+                            </th>
+                            <th>
+                                <span>25%-75%</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tr v-for="(row, index) in rowData" :key="index" :class="index % 2 !== 0 ? 'bg-table-row' : 'bg-white'">
+                        <td>{{ row.school }}</td>
+                        <td class="text-center">{{ row.division }}</td>
+                        <td>{{ row.conference }}</td>
+                        <td class="text-center">{{ row.ranking }}</td>
+                        <td class="text-center">{{ row.gpa.min.toFixed(2) }}</td>
+                        <td class="text-center">{{ row.gpa['25%'].toFixed(2) }}</td>
+                        <td :class="getHex(row.gpa['50%'])" class="text-center">{{ row.gpa['50%'].toFixed(2) }}</td>
+                        <td class="text-center">{{ row.gpa['75%'].toFixed(2) }}</td>
+                        <td class="text-center">{{ row.gpa.max.toFixed(2) }}</td>
+                        <td class="text-center">{{ row.sat.reading.min === 'N/A' ? 'Not Reported' : row.sat.reading.min + '-' + row.sat.reading.max }}</td>
+                        <td class="text-center">{{ row.sat.math.min === 'N/A' ? 'Not Reported' : row.sat.math.min + '-' + row.sat.math.max }}</td>
+                        <td class="text-center">{{ row.act.min === 'N/A'? 'Not Reported': row.act.min + '-' + row.act.max }}</td>
                     </tr>
                 </table>
             </div>
@@ -78,28 +124,60 @@
 <script>
 export default {
     name: "AthleteInfoBar",
+    
     props: {
         athlete: {
             type: Object,
             required: false
         }
+    },
+    
+    data() {
+        return {
+            rowData: this.athlete.report
+        }
+    },
+
+    methods: {
+        getHex(gpa) {
+            const diff = gpa - this.athlete.gpa;
+            console.log(diff);
+            if(diff > .1) {
+                return "bg-gpa-more-than-10-above";
+            } else if (diff > 0 && diff <= .1) {
+                return "bg-gpa-less-than-10-above";
+            } else if (diff == 0) {
+                return "bg-gpa-equal";
+            } else if (diff < 0 && diff >= -.1) {
+                return "bg-gpa-less-than-10-below";
+            } else if (diff < -.1) {
+                return "bg-gpa-more-than-10-below"
+            }
+        }
     }
 };
 </script>
 <style scoped>
+label {
+    font-weight: bold;
+}
 #athlete-info-bar {
     display: grid;
     grid-template-areas:
-        'profile-pic-section name name . logo .'
-        'profile-pic-section info-1 info-2 . logo .'
-        'profile-pic-section info-1 info-2 . report-title .'
-        'profile-pic-section info-1 info-2 . . .'
-        '. . . . . .'
-        'table table table table table .';
+        'top-bar top-bar top-bar top-bar top-bar top-bar .'
+        '. profile-pic-section name name . logo .'
+        '. profile-pic-section info-1 info-2 . logo .'
+        '. profile-pic-section info-1 info-2 . report-title .'
+        '. profile-pic-section info-1 info-2 . . .'
+        '. table table table table table .';
     margin-top: 50px;
-    grid-template-columns: .5fr .5fr 1fr .25fr 1fr .75fr;
+    grid-template-columns: .1fr .25fr .5fr 1fr .25fr 1fr .25fr;
 }
 
+#top-bar {
+    grid-area: top-bar;
+    line-height: 50px;
+}
 
 #profile-pic-section {
     grid-area: profile-pic-section;
@@ -143,17 +221,19 @@ table {
     width: 100%;
 }
 
-th,
-td {
-    text-align: left;
-    padding: 8px;
-}
-
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
 #table {
     grid-area: table;
+}
+
+th {
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 12px;
+}
+
+td {
+    font-size: 12px;
+    padding:5px;
 }
 </style>
