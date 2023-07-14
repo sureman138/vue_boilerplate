@@ -1,17 +1,19 @@
 <template>
   <div class="container">
-    <AcademicFitReport :athlete="athlete_info"/>
+    <!-- <AcademicFitReport :athlete="athlete_info"/> -->
+    <AthleteInfoBar :athlete="athlete_info"/>
   </div>
 </template>
 
 <script>
-import AcademicFitReport from "@/components/AcademicFitReport.vue";
+// import AcademicFitReport from "@/components/AcademicFitReport.vue";
 import AthleteData from "@/assets/data.json";
+import AthleteInfoBar from "./components/AthleteInfoBar.vue";
 
 export default {
   name: "app",
   components: {
-    AcademicFitReport
+    AthleteInfoBar
   },
   data: function() {
     return {
